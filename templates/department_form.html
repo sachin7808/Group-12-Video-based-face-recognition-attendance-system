@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .uni-h1 {
+        font-size: 2rem;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        color: hsl(0, 56%, 98%);
+    }
+    
+    .uni-form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+        margin-top: 1rem;
+    }
+    
+    .uni-form-group {
+        width: 100%;
+        max-width: 600px;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .uni-form-group label {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+        color: hsl(0, 50%, 95%);
+    }
+    
+    .uni-form-group input, .uni-form-group textarea {
+        padding: 0.75rem;
+        font-size: 1rem;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .uni-form-group input:focus, .uni-form-group textarea:focus {
+        border-color: #007bff;
+        outline: none;
+    }
+    
+    .uni-btn {
+        padding: 0.75rem 2rem;
+        font-size: 1rem;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none;
+        width: 100%;
+        max-width: 200px;
+    }
+    
+    .uni-btn-success {
+        background-color: #28a745;
+        color: white;
+        border: none;
+    }
+    
+    .uni-btn-success:hover {
+        background-color: #218838;
+    }
+    
+    .uni-btn-secondary {
+        background-color: hsl(56, 94%, 52%);
+        color: white;
+        border: none;
+    }
+    
+    .uni-btn-secondary:hover {
+        background-color: hsl(180, 8%, 97%);
+    }
+</style>
+
+<h1 class="uni-h1">{% if department %}Update{% else %}Create{% endif %} Department</h1>
+<form method="post" class="uni-form">
+    {% csrf_token %}
+    <div class="uni-form-group">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" class="form-control" value="{{ department.name|default:'' }}" required placeholder="Enter department name">
+    </div>
+    <div class="uni-form-group">
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" class="form-control" placeholder="Enter department description">{{ department.description|default:'' }}</textarea>
+    </div>
+    <button type="submit" class="uni-btn uni-btn-success">Save</button>
+    <a href="{% url 'department_list' %}" class="uni-btn uni-btn-secondary">Cancel</a>
+</form>
+
+{% endblock %}

@@ -1,0 +1,189 @@
+<style>/* Main Content Shift */
+    .main-content {
+        margin-left: 0;
+        transition: margin-left 0.3s ease;
+    }
+    
+    .main-content.shift {
+        margin-left: 250px;
+    }
+    
+    /* Responsive Design */
+    @media screen and (max-width: 768px) {
+        .sidebar {
+            width: 200px;
+        }
+    
+        .main-content.shift {
+            margin-left: 200px;
+        }
+    }
+    
+    @media screen and (max-width: 480px) {
+        .sidebar {
+            width: 100%;
+            height: auto;
+            transform: translateY(-100%);
+        }
+    
+        .sidebar.open {
+            transform: translateY(0);
+        }
+    
+        .toggle-btn {
+            left: auto;
+            right: 20px;
+        }
+    }
+    /* Content container styling */
+.content-container {
+    background-color: #fff;
+    padding: 20px;
+    max-width: 900px;
+    margin: 30px auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Back icon styling */
+.back-icon {
+    font-size: 24px;
+    color: #4CAF50;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+/* Heading styling */
+h2 {
+    font-size: 24px;
+    color: #333;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Paragraph styling */
+p {
+    font-size: 16px;
+    color: #666;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* Message styling */
+.message {
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-left: 5px solid #4CAF50;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #333;
+}
+
+/* Table styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+}
+
+table th, table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+table th {
+    background-color: #f4f4f4;
+    font-size: 16px;
+    color: #333;
+}
+
+table td {
+    font-size: 14px;
+    color: #555;
+}
+
+table a {
+    color: #4CAF50;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+table a:hover {
+    text-decoration: underline;
+}
+
+/* Empty row styling */
+table tbody tr td[colspan="3"] {
+    text-align: center;
+    font-style: italic;
+    color: #888;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .content-container {
+        padding: 15px;
+    }
+
+    table th, table td {
+        font-size: 12px;
+    }
+
+    .back-icon {
+        font-size: 20px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    p {
+        font-size: 14px;
+    }
+}</style>
+{% extends 'base.html' %}
+
+{% block title %}View Email Configurations{% endblock %}
+
+{% block content %}
+    <div class="content-container">
+        <!-- <i class="fas fa-arrow-left back-icon" onclick="window.history.back();" aria-hidden="true"></i> Back icon -->
+        <h2>Email Configurations</h2>
+        <p style="text-align: center; color: #333;">Below is the list of email configurations.</p>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Email Host</th>
+                    <th>Email User</th>
+                    <th>Actions</th>
+                    <a href="{% url 'add_email_config'  %}">Add New</a>
+                </tr>
+            </thead>
+            <tbody>
+                {% for config in email_configs %}
+                    <tr>
+                        <td>{{ config.email_host }}</td>
+                        <td>{{ config.email_host_user }}</td>
+                        <td>
+                            <a href="{% url 'edit_email_config' config.id %}">Edit</a> |
+                            <a href="{% url 'delete_email_config' config.id %}" onclick="return confirm('Are you sure you want to delete this configuration?');">Delete</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="3" style="text-align: center;">No email configurations found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% endblock %}

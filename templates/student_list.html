@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block title %}Student List{% endblock %}
+
+{% block content %}
+<!-- Include necessary CSS for Bootstrap and Font Awesome -->
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<style>
+    /* General Body Styling */
+    body {
+        background-color: #000; /* Black background */
+        color: #fff; /* White text for contrast */
+        font-family: Arial, sans-serif;
+    }
+
+    /* Container Styling */
+    .container {
+        max-width: 1000px; /* Smaller container width */
+        margin: 30px auto;
+        background: #333; /* Dark background for container */
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25); /* Soft shadow for depth */
+    }
+
+    .container h1 {
+        font-size: 24px; /* Reduced heading size */
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #4caf50; /* Green color for the heading */
+        text-align: center;
+        text-transform: uppercase;
+    }
+
+    /* Table Styling */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        background: #222; /* Dark background for table */
+        font-size: 14px; /* Smaller font size */
+        text-align: left;
+    }
+
+    table th,
+    table td {
+        padding: 8px 10px; /* Reduced padding */
+        border: 1px solid #444; /* Darker border */
+    }
+
+    table th {
+        background-color: #4caf50; /* Green header */
+        color: #fff; /* White text */
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+
+    table tr:nth-child(even) {
+        background-color: #333; /* Darker rows for even numbers */
+    }
+
+    table tr:hover {
+        background-color: #555; /* Darker hover effect */
+        cursor: pointer;
+    }
+
+    .actions a {
+        text-decoration: none;
+        color: #4caf50; /* Green for action links */
+        font-weight: bold;
+        transition: color 0.3s ease-in-out;
+    }
+
+    .actions a:hover {
+        color: #388e3c; /* Darker green on hover */
+    }
+
+    /* Responsive Styling */
+    @media (max-width: 768px) {
+        .container {
+            padding: 15px;
+        }
+
+        table th,
+        table td {
+            padding: 8px 5px; /* Further reduced padding for small screens */
+        }
+
+        .container h1 {
+            font-size: 20px; /* Reduced heading size for mobile */
+        }
+
+        table {
+            font-size: 12px; /* Smaller font size for smaller screens */
+        }
+    }
+</style>
+
+<div class="container">
+    <h1>Student List</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Department</th>
+                <th>Authorized</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+            <tr>
+                <td>{{ student.name }}</td>
+                <td>{{ student.email }}</td>
+                <td>{{ student.phone_number }}</td>
+                <td>
+                    {% for department in student.department.all %}
+                    <span>{{ department.name }}</span>{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </td>
+                <td>{% if student.authorized %} Yes {% else %} No {% endif %}</td>
+                <td class="actions">
+                    <a href="{% url 'student-authorize' pk=student.pk %}">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

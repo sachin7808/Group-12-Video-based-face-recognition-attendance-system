@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: hsl(0, 60%, 98%);
+}
+
+.table {
+    width: 100%;
+    margin-top: 1rem;
+    border-collapse: collapse;
+    background-color: hsl(0, 0%, 0%);
+}
+
+.table th, .table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.table th {
+    background-color: #007bff;
+    color: white;
+    font-size: 1.1rem;
+}
+
+.table tbody tr:hover {
+    background-color: hsl(0, 6%, 3%);
+}
+
+.table .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-right: 0.5rem;
+}
+
+.table .btn-warning {
+    background-color: #ffc107;
+    color: white;
+    border: none;
+}
+
+.table .btn-warning:hover {
+    background-color: #e0a800;
+    color: inherit;
+}
+
+.table .btn-danger {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+}
+
+.table .btn-danger:hover {
+    background-color: #c82333;
+    color: inherit;
+}
+
+</style>
+<h1>Department List</h1>
+<a href="{% url 'department_create' %}" class="btn btn-primary">Add New Department</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for department in departments %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ department.name }}</td>
+            <td>{{ department.description }}</td>
+            <td>
+                <a href="{% url 'department_update' department.id %}" class="btn btn-warning btn-sm">Edit</a>
+                <a href="{% url 'department_delete' department.id %}" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

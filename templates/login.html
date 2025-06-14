@@ -1,0 +1,28 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Page Title{% endblock %}
+
+{% block content %}
+<!-- ################################################ -->
+    <div class="login-container">
+        <i class="fas fa-arrow-left back-icon" onclick="window.history.back();" aria-hidden="true"></i> <!-- Back icon -->
+        <h2>Login</h2>
+        <p style="text-align: center; color: #333;">Please enter your username and password.</p> <!-- Instruction message -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" placeholder="Enter admin username" required>
+            
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="Enter admin password" required>
+            
+            <button type="submit">Login</button>
+        </form>
+    </div>
+    {% endblock %}

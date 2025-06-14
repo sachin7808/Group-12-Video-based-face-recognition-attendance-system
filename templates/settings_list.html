@@ -1,0 +1,250 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="header-container">
+        <h2>Check Out Settings List</h2>
+        <a href="{% url 'create_settings' %}" class="add-new-settings-btn">
+            <i class="fas fa-plus"></i> Add New
+        </a>
+    </div>
+
+    <!-- Display success/error messages -->
+    {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+                <p class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                    {{ message }}
+                </p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Table for listing settings -->
+    <table>
+        <thead>
+            <tr>
+                <th>Student</th>
+                <th>Check-out Time Threshold</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for setting in settings %}
+                <tr>
+                    <td>
+                        {% if setting.student %}
+                            {{ setting.student.name }}
+                        {% else %}
+                            Global
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ setting.formatted_time }}
+                    </td>
+                    <td>
+                        <a href="{% url 'update_settings' setting.id %}">Edit</a>
+                        <form method="post" action="{% url 'delete_settings' setting.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <style>
+        /* Table Styling for Dark Background */
+        table {
+            width: 100%;
+            max-width: 800px; /* Maximum table width for larger screens */
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #222; /* Dark background for the table */
+            color: #fff; /* White text */
+            margin: 0 auto; /* Center align the table */
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #444; /* Darker border color */
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #333; /* Dark background for header */
+            color: #fff;
+            font-weight: bold;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #2c2c2c; /* Slightly lighter dark for even rows */
+        }
+
+        tbody tr:nth-child(odd) {
+            background-color: #1e1e1e; /* Dark background for odd rows */
+        }
+
+        tbody tr:hover {
+            background-color: #444; /* Lighter dark background on hover */
+        }
+
+        button {
+            padding: 5px 10px;
+            background-color: #3498db; /* Blue button */
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        button:hover {
+            background-color: #2980b9; /* Darker blue on hover */
+        }
+
+        a {
+            padding: 5px 10px;
+            color: #3498db; /* Blue link */
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Centering and styling headings */
+        .header-container {
+            text-align: center; /* Center the content in the header */
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #fff; /* White color for the heading */
+            font-weight: bold; /* Make heading bold */
+            margin-bottom: 10px;
+        }
+
+        /* Add New Settings button */
+        .add-new-settings-btn {
+            font-weight: bold; /* Make it bold */
+            font-size: 16px;
+            padding: 10px 15px;
+            background-color: #3498db; /* Button background */
+            color: #fff; /* Text color */
+            border: none;
+            text-decoration: none; /* Remove underline */
+            border-radius: 5px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center; /* Align icon and text */
+            justify-content: center; /* Center content */
+        }
+
+        .add-new-settings-btn i {
+            margin-right: 8px; /* Space between icon and text */
+        }
+
+        .add-new-settings-btn:hover {
+            background-color: #2980b9; /* Darker blue on hover */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            table {
+                width: 100%; /* Full width on smaller screens */
+                max-width: 100%; /* No maximum width for mobile */
+            }
+
+            th, td {
+                padding: 8px; /* Reduced padding for mobile */
+                font-size: 12px; /* Smaller font size */
+            }
+
+            button, a {
+                font-size: 10px; /* Smaller font for buttons and links */
+            }
+
+            /* Stack table headers and rows on mobile */
+            th, td {
+                display: block;
+                text-align: right;
+            }
+
+            th {
+                background-color: #333; /* Keep the dark background */
+                color: #fff; /* White text */
+                font-weight: bold;
+            }
+
+            td {
+                border: none; /* Remove borders for mobile view */
+                text-align: left;
+                padding-left: 50%; /* Make space for labels on mobile */
+                position: relative;
+            }
+
+            td::before {
+                content: attr(data-label); /* Create labels for each row */
+                position: absolute;
+                left: 0;
+                font-weight: bold;
+            }
+        }
+
+        /* Center and style the message container */
+        .messages-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Style individual alert messages */
+        .alert {
+            padding: 15px 30px;
+            margin: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            width: 80%; /* Adjust width for responsiveness */
+            max-width: 600px; /* Limit the width on larger screens */
+            text-align: center;
+            font-weight: bold;
+        }
+
+        /* Success message styling */
+        .alert-success {
+            background-color: #28a745; /* Green background for success */
+            color: white;
+        }
+
+        /* Error message styling */
+        .alert-error {
+            background-color: #dc3545; /* Red background for errors */
+            color: white;
+        }
+
+        /* Info message styling */
+        .alert-info {
+            background-color: #17a2b8; /* Blue background for info */
+            color: white;
+        }
+
+        /* Warning message styling */
+        .alert-warning {
+            background-color: #ffc107; /* Yellow background for warnings */
+            color: black;
+        }
+
+        /* Hover effect for alert messages */
+        .alert:hover {
+            opacity: 0.9; /* Slight fade effect on hover */
+        }
+    </style>
+
+{% endblock %}

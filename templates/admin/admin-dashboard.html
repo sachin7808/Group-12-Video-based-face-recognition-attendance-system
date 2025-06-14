@@ -1,0 +1,251 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% block content %}
+  <!-- Main Content -->
+  <div class="main-content" id="main-content">
+    <div class="hero-section">
+        <h1>Video-Based Face Recognition Attendance System</h1>
+        <p>Welcome, {{ user.username }}!</p> 
+        <div class="buttons">
+            <div class="card">
+                <a href="{% url 'student-list' %}">
+                    <i class="fas fa-users"></i>
+                    <p>Students: {{ total_students }}</p>
+                </a>
+            </div>
+            
+                    
+            <div class="card">
+                <a href="{% url 'student_attendance_list' %}">
+                    <i class="fas fa-calendar-check"></i>
+                    <p>Attendance: {{ total_attendance }}</p>
+                </a>
+            </div>
+            <div class="card">
+                <a href="{% url 'student_attendance_list' %}">
+                    <i class="fas fa-check" style="color: green;"></i>
+                    <p>Present: {{ total_present }}</p>
+                </a>
+            </div>
+            <div class="card">
+                <a href="{% url 'student_attendance_list' %}">
+                    <i class="fas fa-times" style="color: red;"></i>
+                    <p>Absent: {{ total_absent }}</p>
+                </a>
+            </div>
+            <div class="card">
+                <a href="{% url 'student_attendance_list' %}">
+                    <i class="fas fa-clock" style="color: red;"></i>
+                    <p>Late Check-ins: {{ total_late_checkins }}</p>
+                </a>
+            </div>
+            <div class="card">
+                <a href="{% url 'student_attendance_list' %}">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <p>Check-ins: {{ total_checkins }}</p>
+                </a>
+            </div>
+            <div class="card">
+                <a href="{% url 'student_attendance_list' %}">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <p>Check-outs: {{ total_checkouts }}</p>
+                </a>
+            </div>
+            <div class="card">
+                <a href="{% url 'camera_config_list' %}">
+                    <i class="fas fa-video"></i>
+                    <p>Cameras: {{ total_cameras }}</p>
+                </a>
+            </div>
+            
+        </div>
+        <!-- this is for showing chart -->
+        <canvas id="attendanceChart" width="400" height="200"></canvas> 
+        
+    </div>
+</div>
+
+<script>
+    // Get the data from the Django template context
+    const totalStudents = {{ total_students }};
+    const totalCourse = {{ total_course }};
+    const totalPending_fees = {{ total_pending_fees }};  // This is the added variable
+    const totalAttendance = {{ total_attendance }};
+    const totalPresent = {{ total_present }};
+    const totalAbsent = {{ total_absent }};
+    const totalLateCheckins = {{ total_late_checkins }};
+    const totalCheckins = {{ total_checkins }};
+    const totalCheckouts = {{ total_checkouts }};
+    const totalCameras = {{ total_cameras }};
+
+    // Calculate total metrics for percentage calculation
+    const totalMetrics = 
+        totalStudents + 
+        totalCourse +
+        totalPending_fees +  // Added totalPending_fees here
+        totalAttendance + 
+        totalPresent + 
+        totalAbsent + 
+        totalLateCheckins + 
+        totalCheckins + 
+        totalCheckouts + 
+        totalCameras;
+
+    // Calculate percentages
+    const metricsPercentages = [
+        (totalStudents / totalMetrics) * 100,
+        (totalCourse / totalMetrics) * 100,
+        (totalPending_fees / totalMetrics) * 100, // Added percentage calculation for totalPending_fees
+        (totalAttendance / totalMetrics) * 100,
+        (totalPresent / totalMetrics) * 100,
+        (totalAbsent / totalMetrics) * 100,
+        (totalLateCheckins / totalMetrics) * 100,
+        (totalCheckins / totalMetrics) * 100,
+        (totalCheckouts / totalMetrics) * 100,
+        (totalCameras / totalMetrics) * 100
+    ];
+
+    // Configure the chart
+    const ctx = document.getElementById('attendanceChart').getContext('2d');
+    const gradientColors = {
+        students: ctx.createLinearGradient(0, 0, 0, 400),
+        courses: ctx.createLinearGradient(0, 0, 0, 400),
+        pendingFees: ctx.createLinearGradient(0, 0, 0, 400),  // Added gradient for pending fees
+        attendance: ctx.createLinearGradient(0, 0, 0, 400),
+        present: ctx.createLinearGradient(0, 0, 0, 400),
+        absent: ctx.createLinearGradient(0, 0, 0, 400),
+        late: ctx.createLinearGradient(0, 0, 0, 400),
+        checkin: ctx.createLinearGradient(0, 0, 0, 400),
+        checkout: ctx.createLinearGradient(0, 0, 0, 400),
+        cameras: ctx.createLinearGradient(0, 0, 0, 400)
+    };
+
+    // Define gradients for each bar
+    gradientColors.students.addColorStop(0, 'rgba(255, 99, 132, 0.5)');
+    gradientColors.students.addColorStop(1, 'rgba(255, 99, 132, 1)');
+    gradientColors.courses.addColorStop(0, 'rgba(54, 162, 235, 0.5)');
+    gradientColors.courses.addColorStop(1, 'rgba(54, 162, 235, 1)');
+    gradientColors.pendingFees.addColorStop(0, 'rgba(255, 99, 71, 0.5)'); // Distinct color for pending fees
+    gradientColors.pendingFees.addColorStop(1, 'rgba(255, 99, 71, 1)');
+    gradientColors.attendance.addColorStop(0, 'rgba(255, 206, 86, 0.5)');
+    gradientColors.attendance.addColorStop(1, 'rgba(255, 206, 86, 1)');
+    gradientColors.present.addColorStop(0, 'rgba(75, 192, 192, 0.5)');
+    gradientColors.present.addColorStop(1, 'rgba(75, 192, 192, 1)');
+    gradientColors.absent.addColorStop(0, 'rgba(153, 102, 255, 0.5)');
+    gradientColors.absent.addColorStop(1, 'rgba(153, 102, 255, 1)');
+    gradientColors.late.addColorStop(0, 'rgba(255, 159, 64, 0.5)');
+    gradientColors.late.addColorStop(1, 'rgba(255, 159, 64, 1)');
+    gradientColors.checkin.addColorStop(0, 'rgba(201, 203, 207, 0.5)');
+    gradientColors.checkin.addColorStop(1, 'rgba(201, 203, 207, 1)');
+    gradientColors.checkout.addColorStop(0, 'rgba(103, 58, 183, 0.5)');
+    gradientColors.checkout.addColorStop(1, 'rgba(103, 58, 183, 1)');
+    gradientColors.cameras.addColorStop(0, 'rgba(0, 128, 128, 0.5)');
+    gradientColors.cameras.addColorStop(1, 'rgba(0, 128, 128, 1)');
+
+    const attendanceChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [
+                'Students',
+                'Courses', 
+                'Pending Fees', // Added label for pending fees
+                'Attendance Records', 
+                'Present', 
+                'Absent', 
+                'Late Check-ins', 
+                'Check-ins', 
+                'Check-outs', 
+                'Cameras'
+            ],
+            datasets: [{
+                label: 'Data Metrics (%)',
+                data: metricsPercentages,
+                backgroundColor: [
+                    gradientColors.students,
+                    gradientColors.courses,
+                    gradientColors.pendingFees, // Added gradient for pending fees
+                    gradientColors.attendance,
+                    gradientColors.present,
+                    gradientColors.absent,
+                    gradientColors.late,
+                    gradientColors.checkin,
+                    gradientColors.checkout,
+                    gradientColors.cameras
+                ],
+                borderColor: 'rgba(0,0,0,0.1)',
+                borderWidth: 1,
+                borderRadius: 10, // Rounded corners for bars
+                hoverBackgroundColor: 'rgba(0,0,0,0.1)' // Subtle hover effect
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        font: {
+                            size: 14,
+                            family: "'Poppins', sans-serif"
+                        }
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Data Metrics Overview (%)',
+                    font: {
+                        size: 18,
+                        family: "'Poppins', sans-serif"
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0,0,0,0.8)',
+                    titleFont: {
+                        size: 14
+                    },
+                    bodyFont: {
+                        size: 12
+                    },
+                    borderWidth: 1,
+                    borderColor: '#ddd'
+                }
+            },
+            animation: {
+                duration: 2000, // Smooth animation
+                easing: 'easeInOutCubic'
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        font: {
+                            size: 12,
+                            family: "'Poppins', sans-serif"
+                        }
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value + '%';
+                        },
+                        font: {
+                            size: 12,
+                            family: "'Poppins', sans-serif"
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(200,200,200,0.2)'
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+
+
+
+{% endblock %}

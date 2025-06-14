@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Attendance System</title>
+    <!-- Include Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+
+<body><style>/* Sidebar Styling */
+    .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 250px;
+        height: 100%;
+        background: linear-gradient(45deg, #34495e, #2ecc71);
+        color: #fff;
+        padding: 20px;
+        box-shadow: 5px 0 15px rgba(0, 0, 0, 0.3);
+        transform: translateX(-100%);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        z-index: 1000;
+        overflow-y: auto;
+    }
+    
+    .sidebar.open {
+        transform: translateX(0);
+        box-shadow: 5px 0 15px rgba(0, 0, 0, 0.5);
+    }
+    
+    .sidebar h4 {
+        font-size: 1.8em;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #fff;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    
+    .sidebar a {
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        margin-bottom: 15px;
+        text-decoration: none;
+        color: #fff;
+        font-size: 1.1em;
+        border-radius: 8px;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+    
+    .sidebar a i {
+        margin-right: 10px;
+        font-size: 1.3em;
+    }
+    
+    .sidebar a:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        transform: translateX(10px);
+        color: #f1f1f1;
+    }
+    
+    .sidebar a.active {
+        background-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    /* Toggle Button Styling */
+    .toggle-btn {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 35px;
+        height: 30px;
+        cursor: pointer;
+        z-index: 1100;
+        background: none;
+        border: none;
+    }
+    
+    .toggle-btn span {
+        display: block;
+        width: 100%;
+        height: 4px;
+        background-color: #fff;
+        border-radius: 4px;
+        transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+    
+    .sidebar.open ~ .toggle-btn span:nth-child(1) {
+        transform: rotate(45deg) translateY(10px);
+        background-color: #fff;
+    }
+    
+    .sidebar.open ~ .toggle-btn span:nth-child(2) {
+        opacity: 0;
+    }
+    
+    .sidebar.open ~ .toggle-btn span:nth-child(3) {
+        transform: rotate(-45deg) translateY(-10px);
+        background-color: #fff;
+    }
+    
+    /* Main Content Shift */
+    .main-content {
+        margin-left: 0;
+        transition: margin-left 0.3s ease;
+    }
+    
+    .main-content.shift {
+        margin-left: 250px;
+    }
+    
+    /* Responsive Design */
+    @media screen and (max-width: 768px) {
+        .sidebar {
+            width: 200px;
+        }
+    
+        .main-content.shift {
+            margin-left: 200px;
+        }
+    }
+    
+    @media screen and (max-width: 480px) {
+        .sidebar {
+            width: 100%;
+            height: auto;
+            transform: translateY(-100%);
+        }
+    
+        .sidebar.open {
+            transform: translateY(0);
+        }
+    
+        .toggle-btn {
+            left: auto;
+            right: 20px;
+        }
+    }
+    /* Content container styling */
+.content-container {
+    background-color: #fff;
+    padding: 20px;
+    max-width: 900px;
+    margin: 30px auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Back icon styling */
+.back-icon {
+    font-size: 24px;
+    color: #4CAF50;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+/* Heading styling */
+h2 {
+    font-size: 24px;
+    color: #333;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Paragraph styling */
+p {
+    font-size: 16px;
+    color: #666;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* Message styling */
+.message {
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-left: 5px solid #4CAF50;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #333;
+}
+
+/* Table styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+}
+
+table th, table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+table th {
+    background-color: #f4f4f4;
+    font-size: 16px;
+    color: #333;
+}
+
+table td {
+    font-size: 14px;
+    color: #555;
+}
+
+table a {
+    color: #4CAF50;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+table a:hover {
+    text-decoration: underline;
+}
+
+/* Empty row styling */
+table tbody tr td[colspan="3"] {
+    text-align: center;
+    font-style: italic;
+    color: #888;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .content-container {
+        padding: 15px;
+    }
+
+    table th, table td {
+        font-size: 12px;
+    }
+
+    .back-icon {
+        font-size: 20px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    p {
+        font-size: 14px;
+    }
+}
+/* General form container styling */
+form {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    margin: 40px auto;
+    width: 100%;
+}
+
+/* Heading styling */
+h1 {
+    font-size: 20px;
+    color: hsl(0, 0%, 98%);
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* Label styling */
+label {
+    font-size: 12px;
+    color: #555;
+    margin-bottom: 6px;
+    display: block;
+}
+
+/* Input field styling */
+input[type="text"], 
+input[type="number"], 
+input[type="password"] {
+    width: 100%;
+    padding: 8px;
+    margin: 6px 0 12px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 12px;
+    color: #333;
+}
+
+input[type="checkbox"] {
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+/* Button styling */
+button[type="submit"] {
+    background-color: #4CAF50;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 12px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+/* Responsive design for mobile */
+@media (max-width: 768px) {
+    form {
+        padding: 12px;
+        max-width: 90%;
+    }
+
+    h1 {
+        font-size: 18px;
+    }
+
+    label, input[type="text"], input[type="number"], input[type="password"] {
+        font-size: 10px;
+    }
+
+    button[type="submit"] {
+        padding: 8px 16px;
+        font-size: 10px;
+    }
+}
+
+/* Responsive design for larger screens */
+@media (min-width: 1200px) {
+    form {
+        max-width: 600px;
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 22px;
+    }
+
+    input[type="text"], 
+    input[type="number"], 
+    input[type="password"] {
+        font-size: 14px;
+    }
+
+    button[type="submit"] {
+        padding: 12px 24px;
+        font-size: 14px;
+    }
+}
+
+    </style>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <h2><a href="/" style="color: inherit; text-decoration: none;">Dashboard</a></h2>
+        {% if user.is_authenticated %}
+            <a href="{% url 'register_student' %}"><i class="fas fa-user-plus"></i> Register Student</a>
+            <a href="{% url 'send_attendance_notifications' %}"><i class="fas fa-bell"></i> Sent Notifications</a>
+            <a href="{% url 'view_email_configs' %}"><i class="fas fa-cogs"></i> Email Settings</a>
+
+            <a href="{% url 'student-list' %}"><i class="fas fa-users"></i> Manage Students</a>
+            <a href="{% url 'camera_config_list' %}"><i class="fas fa-camera"></i> Manage Camera</a>
+            <a href="{% url 'mark_attendance' %}"><i class="fas fa-check-circle"></i> Mark Attendance</a>
+            <a href="{% url 'capture_and_recognize_with_cam' %}"><i class="fas fa-video"></i>live feed</a>
+            <a href="{% url 'student_attendance_list' %}"><i class="fas fa-calendar-check"></i> Attendance Details</a>
+            <a href="{% url 'late_checkin_policy_list' %}"><i class="fas fa-clock"></i> Late Check-In Policy</a>  <!-- New link for Late Check-In Policy -->
+            <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        {% else %}
+            <a href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> Login</a>
+        {% endif %}
+    </div>
+    
+
+    <!-- Modern Toggle Button -->
+    <button class="toggle-btn" id="toggle-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <h1>Edit Email Configuration</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <label for="email_host">Email Host:</label>
+        <input type="text" id="email_host" name="email_host" value="{{ email_config.email_host }}" required><br><br>
+
+        <label for="email_port">Email Port:</label>
+        <input type="number" id="email_port" name="email_port" value="{{ email_config.email_port }}" required><br><br>
+
+        <label for="email_use_tls">Use TLS:</label>
+        <input type="checkbox" id="email_use_tls" name="email_use_tls" {% if email_config.email_use_tls %}checked{% endif %}><br><br>
+
+        <label for="email_host_user">Email Host User:</label>
+        <input type="text" id="email_host_user" name="email_host_user" value="{{ email_config.email_host_user }}" required><br><br>
+
+        <label for="email_host_password">Email Host Password:</label>
+        <input type="password" id="email_host_password" name="email_host_password" value="{{ email_config.email_host_password }}" required><br><br>
+
+        <button type="submit">Update Configuration</button>
+    </form>
+
+    <!-- Footer -->
+    <footer>
+        <p>Developed by Girish | <a href="/">Visit our website</a></p>
+        <P>Version 2.0</P>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        const toggleBtn = document.getElementById('toggle-btn');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('main-content');
+
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            mainContent.classList.toggle('shift');
+        });
+
+        // Close sidebar on outside click for mobile
+        document.addEventListener('click', (e) => {
+            if (!sidebar.contains(e.target) && !toggleBtn.contains(e.target)) {
+                sidebar.classList.remove('open');
+                mainContent.classList.remove('shift');
+            }
+        });
+    </script>
+</body>
+</html>

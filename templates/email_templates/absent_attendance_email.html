@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absent Attendance Notification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .email-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .email-header {
+            background-color: #4CAF50;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+        .email-header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .email-body {
+            padding: 20px;
+        }
+        .email-body p {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #333;
+        }
+        .email-body .student-name {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        .email-body .highlight {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-left: 5px solid #4CAF50;
+            margin-top: 10px;
+        }
+        .email-footer {
+            background-color: #f4f4f4;
+            color: #777;
+            padding: 15px;
+            text-align: center;
+            border-radius: 0 0 8px 8px;
+        }
+        .footer-link {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        .footer-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="email-container">
+        <div class="email-header">
+            <h1>Absent Attendance Notification</h1>
+        </div>
+
+        <div class="email-body">
+            <p>Dear <span class="student-name">{{ student.name }}</span>,</p>
+
+            <p>We noticed that you were absent on <strong>{{ record.date }}</strong>.</p>
+
+            <div class="highlight">
+                <p>Please ensure to be on time for future sessions. If there was an issue, kindly inform us so we can assist you accordingly.</p>
+            </div>
+
+            <p>If you have any questions or concerns, feel free to reach out to the attendance management team.</p>
+
+            <p>Best regards,<br>Your Attendance Management Team</p>
+        </div>
+
+        <div class="email-footer">
+            <p>If you need any assistance, please visit our <a href="" class="footer-link">Help Center</a>.</p>
+        </div>
+    </div>
+
+</body>
+</html>
